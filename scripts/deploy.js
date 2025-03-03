@@ -1,37 +1,39 @@
 require("dotenv").config();
-const hre = require("hardhat");
+const { ethers } = require("hardhat"); // ✅ Explicitly import ethers
 
 async function main() {
-    console.log("Deploying MeeFieTestToken...");
+    console.log("🚀 Deploying MeeFieTestToken...");
 
     // Get signer (deployer)
-    const [deployer] = await hre.ethers.getSigners();
-    console.log("Deploying from:", deployer.address);
+    const [deployer] = await ethers.getSigners();
+    console.log("✅ Deploying from:", deployer.address);
 
     // Read deployment variables from .env
-    const initialSupply = hre.ethers.utils.parseEther("1000000"); // 1M tokens
-    const treasuryWallet = deployer.address; // Change if you have a dedicated treasury address
+    const initialSupply = ethers.parseEther("1000000"); // ✅ Corrected ethers.utils.parseEther
+    const treasuryWallet = deployer.address; // Change if needed
     const initialOwner = deployer.address;
 
     // Get the contract factory
-    const MeeFieTestToken = await hre.ethers.getContractFactory("MeeFieTestToken");
+    const MeeFieTestToken = await ethers.getContractFactory("MeeFieTestToken");
 
     // Deploy contract
     const token = await MeeFieTestToken.deploy(initialSupply, treasuryWallet, initialOwner);
 
-    await token.deployed();
-    console.log("MeeFieTestToken deployed to:", token.address);
+    await token.waitForDeployment(); // ✅ Updated for ethers v6
+    const tokenAddress = await token.getAddress(); // ✅ Corrected getting deployed address
+
+    console.log(`✅ MeeFieTestToken deployed to: ${tokenAddress}`);
 
     // Save deployment details
     console.log(`\n🔹 Deployment Summary:
     Token Name: MeeFieTestToken
     Token Symbol: MFIE
-    Token Address: ${token.address}
+    Token Address: ${tokenAddress}
     Deployed by: ${deployer.address}
     Treasury Wallet: ${treasuryWallet}`);
 
     // If using a blockchain explorer, verify deployment
-    console.log(`🔍 Verify at: ${process.env.BLOCKEXPLORER_URL}/address/${token.address}`);
+    console.log(`🔍 Verify at: ${process.env.BLOCKEXPLORER_URL}/address/${tokenAddress}`);
 }
 
 // Execute script

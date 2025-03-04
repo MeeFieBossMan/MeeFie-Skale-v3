@@ -5,10 +5,10 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.20", // ✅ Your main contract's Solidity version
+        version: "0.8.20", // MeeFie contract version
       },
       {
-        version: "0.6.12", // ✅ Required for Sushiswap contracts
+        version: "0.6.12", // ✅ Sushiswap version
         settings: {
           optimizer: {
             enabled: true,
